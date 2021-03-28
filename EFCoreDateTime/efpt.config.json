@@ -1,0 +1,35 @@
+﻿{
+   "CodeGenerationMode": 0,
+   "ContextClassName": "EfcoredatetimeContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": true,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "DbModel",
+   "ProjectRootNamespace": "EFCoreDateTime",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[DateTimeTest]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "ROMAN-PC\\SQLEXPRESS.EFCoreDateTime",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseNoConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSpatial": false
+}

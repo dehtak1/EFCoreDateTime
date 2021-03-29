@@ -1,5 +1,6 @@
 ﻿using EFCoreDateTime.DbModel;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Linq;
 
@@ -13,6 +14,13 @@ namespace EFCoreDateTime
 			int dbTestId = 0;
 			try
 			{
+
+				//
+				DateTimeOffset nowUtc = DateTime.UtcNow;
+				DateTimeOffset now = DateTime.Now;
+				//
+
+				var rozdil = nowUtc - now;
 
 				string json = "{"
 					+ "dtCasvUTC:\"2021-03-18T23:30:00Z\","			//UTC
@@ -61,10 +69,30 @@ namespace EFCoreDateTime
 				DateTimeTest dbTestZDB = db1.DateTimeTest
 					.Where(x => x.Id == dbTestId)
 					.FirstOrDefault();
-				Console.WriteLine(JsonConvert.SerializeObject(dbTestZDB));
+
+				var settings = new JsonSerializerSettings();
+				settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+				settings.DateFormatString = "yyyy-MM-ddTHH:mm:ss.ffzzz";
+				//settings.DateFormatString = "u";
+				Console.WriteLine(JsonConvert.SerializeObject(dbTestZDB,settings));
 				Console.WriteLine();
 
+				settings = new JsonSerializerSettings
+				{
+					Converters = {
+				new IsoDateTimeOffsetConverter()}
+				};
+
+				Console.WriteLine("vlastni serializace");
+				Console.WriteLine();
+				Console.WriteLine(JsonConvert.SerializeObject(dbTestZDB, settings));
 				
+
+				DateTime a1 = dbTestZDB.dfoff3.DateTime;
+				DateTime a2 = dbTestZDB.dfoff3.UtcDateTime;
+				DateTime a3 = dbTestZDB.dfoff3.LocalDateTime;
+				
+
 				var zDateTime = new VstupJson
 				{
 					dtCasvUTC = dbTestZDB.dt1,
@@ -185,5 +213,21 @@ namespace EFCoreDateTime
 		public DateTimeOffset dtCasvUTC { get; set; }
 		public DateTimeOffset dtCasvCET { get; set; }
 		public DateTimeOffset dtCasvMSK { get; set; }
+	}
+
+	//https://stackoverflow.com/questions/59276193/json-net-how-to-serialize-datetimeoffset-with-z-instead-of-0000-but-keep-o
+	public class IsoDateTimeOffsetConverter : IsoDateTimeConverter
+	{
+		public override bool CanConvert(Type objectType)
+		{
+			return objectType == typeof(DateTimeOffset) || objectType == typeof(DateTimeOffset?);
+		}
+
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+		{
+			var dateTimeOffset = (DateTimeOffset)value;
+			//Serialize as a DateTime
+			base.WriteJson(writer, dateTimeOffset.UtcDateTime, serializer);
+		}
 	}
 }
